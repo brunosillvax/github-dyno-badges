@@ -1,0 +1,50 @@
+name: 'GitHub Dyno-Badges'
+description: 'GitHub Action para gerar badges dinâmicos em perfis GitHub com arquitetura modular'
+author: 'Bruno'
+branding:
+  icon: 'activity'
+  color: 'blue'
+
+inputs:
+  github-token:
+    description: 'GitHub token para autenticação (GITHUB_TOKEN por padrão)'
+    required: false
+    default: ${{ github.token }}
+
+  config-file:
+    description: 'Caminho para o arquivo de configuração YAML'
+    required: false
+    default: 'dyno-badges.config.yml'
+
+  template-file:
+    description: 'Caminho para o arquivo template'
+    required: false
+    default: 'README.template.md'
+
+  output-file:
+    description: 'Caminho para o arquivo de saída'
+    required: false
+    default: 'README.md'
+
+  commit-message:
+    description: 'Mensagem de commit personalizada'
+    required: false
+    default: 'Update profile stats'
+
+  branch:
+    description: 'Branch para fazer push das mudanças'
+    required: false
+    default: 'main'
+
+outputs:
+  success:
+    description: 'Indica se a execução foi bem-sucedida'
+    value: ${{ steps.dyno-badges.outputs.success }}
+
+  changes:
+    description: 'Indica se houve mudanças no repositório'
+    value: ${{ steps.dyno-badges.outputs.changes }}
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'

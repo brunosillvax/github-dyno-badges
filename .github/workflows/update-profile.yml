@@ -1,0 +1,40 @@
+name: Update Profile
+
+on:
+  schedule:
+    # Executa a cada 6 horas
+    - cron: '0 */6 * * *'
+  workflow_dispatch: # Permite execução manual
+
+jobs:
+  update-profile:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Update profile with Dyno-Badges
+        uses: ./
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          config-file: 'dyno-badges.config.yml'
+          template-file: 'README.template.md'
+          output-file: 'README.md'
+          commit-message: '📊 Update profile stats'
+          branch: 'main'

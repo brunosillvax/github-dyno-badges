@@ -1,0 +1,34 @@
+# Configuração do GitHub Dyno-Badges
+# Copie este arquivo para dyno-badges.config.yml e configure suas credenciais
+
+providers:
+  github:
+    enabled: true
+    config:
+      username: 'seu-usuario-github'
+      token: 'seu-token-opcional' # Opcional, para rate limits maiores
+
+  wakatime:
+    enabled: false
+    config:
+      apiKey: 'seu-api-key-wakatime'
+      username: 'seu-usuario-wakatime' # Opcional
+
+  stackoverflow:
+    enabled: false
+    config:
+      userId: 'seu-user-id-stackoverflow'
+      site: 'stackoverflow' # ou 'pt.stackoverflow'
+
+  devto:
+    enabled: false
+    config:
+      username: 'seu-usuario-devto'
+
+template:
+  input: 'README.template.md'
+  output: 'README.md'
+
+git:
+  commitMessage: 'Update profile stats'
+  branch: 'main'
