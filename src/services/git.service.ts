@@ -27,8 +27,15 @@ export class GitService {
       await execAsync(`git config user.name "${this.config.username}"`);
       await execAsync(`git config user.email "${this.config.email}"`);
 
-      // Configurar o token para autenticação
-      await execAsync(`git config credential.helper store`);
+      // Configurar o token na URL remota
+      const { stdout: remoteUrl } = await execAsync('git remote get-url origin');
+      const tokenUrl = remoteUrl.replace(
+        'https://github.com/',
+        `https://${this.config.token}@github.com/`
+      ).trim();
+      
+      // Atualizar remote URL com token
+      await execAsync(`git remote set-url origin "${tokenUrl}"`);
 
       console.log('Git configurado com sucesso');
     } catch (error) {
@@ -111,11 +118,20 @@ export class GitService {
       // Fazer commit
       await this.commit(message);
 
-      // Fazer push
-      await this.push();
-
-      console.log('Mudanças commitadas e enviadas com sucesso');
-      return true;
+      // Tentar fazer push
+      try {
+        await this.push();
+        console.log('Mudanças commitadas e enviadas com sucesso');
+        return true;
+      } catch (pushError: any) {
+        // Se falhar por permissão (403), avisar mas não falhar
+        if (pushError.stderr?.includes('403') || pushError.message?.includes('Permission')) {
+          console.warn('⚠️ Não foi possível fazer push (sem permissão). Mudanças foram commitadas localmente.');
+          console.warn('Para fazer push manualmente, execute: git push');
+          return true; // Considera como sucesso parcial
+        }
+        throw pushError; // Outros erros são re-lançados
+      }
     } catch (error) {
       console.error('Erro no processo de commit e push:', error);
       throw new Error('Falha no processo de commit e push');

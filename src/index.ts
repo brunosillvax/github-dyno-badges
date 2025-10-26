@@ -56,6 +56,15 @@ async function main(): Promise<void> {
         logger.info(`🔄 Processando provider: ${providerName}`);
 
         const providerConfig = configService.getProviderConfig(providerName);
+        
+        // Se for o provider GitHub e não tiver username configurado, usar o actor do contexto
+        if (providerName === 'github' && !providerConfig.config?.username) {
+          providerConfig.config = {
+            ...providerConfig.config,
+            username: github.context.actor,
+          };
+        }
+        
         const provider = ProviderFactory.createProvider(providerName, {
           ...providerConfig.config,
           enabled: providerConfig.enabled,
