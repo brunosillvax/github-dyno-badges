@@ -57,11 +57,16 @@ async function main(): Promise<void> {
 
         const providerConfig = configService.getProviderConfig(providerName);
         
-        // Se for o provider GitHub e não tiver username configurado, usar o actor do contexto
+        // Se for o provider GitHub e não tiver username configurado, usar o actor ou o owner do repo
         if (providerName === 'github' && !providerConfig.config?.username) {
+          // github.context.actor pode ser um bot, então preferimos usar o owner do repositório
+          const username = github.context.actor !== 'github-actions[bot]' 
+            ? github.context.actor 
+            : github.context.repo.owner;
+          
           providerConfig.config = {
             ...providerConfig.config,
-            username: github.context.actor,
+            username: username,
           };
         }
         

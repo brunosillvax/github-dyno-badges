@@ -1,0 +1,18 @@
+providers:
+  github:
+    enabled: false
+  wakatime:
+    enabled: false
+  stackoverflow:
+    enabled: false
+  devto:
+    enabled: false
+
+template:
+  input: 'README.template.md'
+  output: 'README.md'
+
+git:
+  commitMessage: 'Update profile stats'
+  branch: 'main'
+
