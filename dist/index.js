@@ -318,6 +318,7 @@ async function main() {
                     const username = github.context.actor !== 'github-actions[bot]'
                         ? github.context.actor
                         : github.context.repo.owner;
+                    logger.info(`Setting GitHub username to: ${username} (actor: ${github.context.actor}, owner: ${github.context.repo.owner})`);
                     providerConfig.config = {
                         ...providerConfig.config,
                         username: username,
