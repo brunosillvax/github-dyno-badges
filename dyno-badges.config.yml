@@ -1,6 +1,8 @@
 providers:
   github:
-    enabled: false
+    enabled: true
+    config:
+      username: 'brunosillvax'
   wakatime:
     enabled: false
   stackoverflow:
